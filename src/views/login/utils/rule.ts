@@ -7,6 +7,18 @@ export const REGEXP_PWD =
 
 /** 登录校验 */
 const loginRules = reactive<FormRules>({
+  captchaCode: [
+    {
+      required: true,
+      message: "请输入验证码",
+      trigger: "blur"
+    },
+    {
+      len: 4,
+      message: "请输入 4 位验证码",
+      trigger: "blur"
+    }
+  ],
   password: [
     {
       validator: (rule, value, callback) => {

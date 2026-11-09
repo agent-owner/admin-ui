@@ -1,11 +1,20 @@
 // 根据角色动态生成路由
 import { defineFakeRoute } from "vite-plugin-fake-server/client";
+import { CAPTCHA_ERROR_CODE, verifyCaptcha } from "./shared/captcha";
 
 export default defineFakeRoute([
   {
     url: "/login",
     method: "post",
     response: ({ body }) => {
+      // 先校验验证码：一次性使用，无论校验成功还是失败都会立即失效
+      if (!verifyCaptcha(body?.captchaId, body?.captchaCode)) {
+        return {
+          success: false,
+          code: CAPTCHA_ERROR_CODE,
+          message: "验证码错误或已过期"
+        };
+      }
       if (body.username === "admin") {
         return {
           success: true,
