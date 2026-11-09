@@ -44,6 +44,8 @@ export function getPluginsList(
     vitePluginFakeServer({
       logger: false,
       include: "mock",
+      // `mock/shared` 下是 mock 公共方法，不注册为接口
+      exclude: ["mock/shared/**"],
       infixName: false,
       enableProd: true
     }),

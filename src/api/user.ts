@@ -2,6 +2,10 @@ import { http } from "@/utils/http";
 
 export type UserResult = {
   success: boolean;
+  /** 业务错误码，例如验证码错误或过期 */
+  code?: number;
+  /** 业务错误提示，失败时由接口返回 */
+  message?: string;
   data: {
     /** 头像 */
     avatar: string;
