@@ -38,7 +38,7 @@ const { title } = useNav();
 
 const ruleForm = reactive({
   username: "admin",
-  password: "admin123"
+  password: "Admin@12"
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
@@ -66,6 +66,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           } else {
             message("登录失败", { type: "error" });
           }
+        })
+        .catch(() => {
+          message("登录失败，请稍后重试", { type: "error" });
         })
         .finally(() => (loading.value = false));
     }
