@@ -1,0 +1,36 @@
+# pnpm 11+ reads project settings from this file instead of the `pnpm` field in
+# package.json and the non-registry entries in .npmrc. The equivalent .npmrc
+# entries are kept for older pnpm versions.
+
+# Dependencies that need their install scripts to run. Every other dependency
+# is denied by default, which fails `pnpm install` with ERR_PNPM_IGNORED_BUILDS.
+allowBuilds:
+  "@parcel/watcher": true
+  core-js: true
+  es5-ext: true
+  esbuild: true
+  typeit: true
+  vue-demi: true
+  "@tailwindcss/oxide": false
+
+# Deprecated versions that are expected in the dependency tree and should not
+# be reported during install.
+allowedDeprecatedVersions:
+  are-we-there-yet: "*"
+  sourcemap-codec: "*"
+  lodash.isequal: "*"
+  domexception: "*"
+  w3c-hr-time: "*"
+  inflight: "*"
+  npmlog: "*"
+  rimraf: "*"
+  stable: "*"
+  gauge: "*"
+  abab: "*"
+  glob: "*"
+
+# Same settings as before, previously read from .npmrc.
+shamefullyHoist: true
+enablePrePostScripts: false
+strictPeerDependencies: false
+shellEmulator: true
