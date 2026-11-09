@@ -17,6 +17,10 @@ import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
 
 import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
+import WechatIcon from "@/assets/svg/social/wechat.svg?component";
+import WeiboIcon from "@/assets/svg/social/weibo.svg?component";
+import DouyinIcon from "@/assets/svg/social/douyin.svg?component";
+import QQIcon from "@/assets/svg/social/qq.svg?component";
 import Lock from "~icons/ri/lock-fill";
 import User from "~icons/ri/user-3-fill";
 
@@ -40,6 +44,22 @@ const ruleForm = reactive({
   username: "admin",
   password: "admin123"
 });
+
+const socialLogins = [
+  { name: "微信", tip: "使用微信登录", color: "#07c160", icon: WechatIcon },
+  { name: "微博", tip: "使用微博登录", color: "#e6162d", icon: WeiboIcon },
+  {
+    name: "抖音",
+    tip: "使用抖音登录",
+    color: "var(--el-text-color-primary)",
+    icon: DouyinIcon
+  },
+  { name: "QQ", tip: "使用QQ登录", color: "#12b7f5", icon: QQIcon }
+];
+
+const onSocialLogin = (name: string) => {
+  message(`${name}登录功能正在开发中，敬请期待`, { type: "warning" });
+};
 
 const onLogin = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -163,6 +183,27 @@ useEventListener(document, "keydown", ({ code }) => {
               </el-button>
             </Motion>
           </el-form>
+
+          <Motion :delay="300">
+            <div class="social-login">
+              <el-tooltip
+                v-for="item in socialLogins"
+                :key="item.name"
+                :content="item.tip"
+                placement="bottom"
+              >
+                <a
+                  class="social-login-item"
+                  href="#"
+                  :style="{ color: item.color }"
+                  :aria-label="item.tip"
+                  @click.prevent="onSocialLogin(item.name)"
+                >
+                  <component :is="item.icon" />
+                </a>
+              </el-tooltip>
+            </div>
+          </Motion>
         </div>
       </div>
     </div>
@@ -171,6 +212,39 @@ useEventListener(document, "keydown", ({ code }) => {
 
 <style scoped>
 @import url("@/style/login.css");
+
+.social-login {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.social-login-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  text-decoration: none;
+  border: 1px solid var(--el-border-color);
+  border-radius: 50%;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.social-login-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.social-login-item:hover {
+  background-color: color-mix(in srgb, currentcolor 10%, transparent);
+  border-color: currentcolor;
+  transform: translateY(-2px);
+}
 </style>
 
 <style lang="scss" scoped>
