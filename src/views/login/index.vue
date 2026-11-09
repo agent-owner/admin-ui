@@ -3,7 +3,7 @@ import Motion from "./utils/motion";
 import { useRouter } from "vue-router";
 import { message } from "@/utils/message";
 import { loginRules } from "./utils/rule";
-import { ref, reactive, toRaw } from "vue";
+import { ref, reactive, toRaw, onUnmounted } from "vue";
 import { debounce } from "@pureadmin/utils";
 import { useNav } from "@/layout/hooks/useNav";
 import { useEventListener } from "@vueuse/core";
@@ -32,8 +32,17 @@ const ruleFormRef = ref<FormInstance>();
 const { initStorage } = useLayout();
 initStorage();
 
-const { dataTheme, overallStyle, dataThemeChange } = useDataThemeChange();
+const {
+  dataTheme,
+  overallStyle,
+  dataThemeChange,
+  watchSystemThemeChange,
+  removeSystemThemeChange
+} = useDataThemeChange();
 dataThemeChange(overallStyle.value);
+/** 登录页同样跟随浏览器主题变化 */
+watchSystemThemeChange();
+onUnmounted(removeSystemThemeChange);
 const { title } = useNav();
 
 const ruleForm = reactive({
@@ -98,7 +107,7 @@ useEventListener(document, "keydown", ({ code }) => {
         inline-prompt
         :active-icon="dayIcon"
         :inactive-icon="darkIcon"
-        @change="dataThemeChange"
+        @change="dataThemeChange(dataTheme ? 'dark' : 'light')"
       />
     </div>
     <div class="login-container">

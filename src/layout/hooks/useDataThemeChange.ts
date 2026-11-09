@@ -33,8 +33,15 @@ export function useDataThemeChange() {
 
   const { $storage } = useGlobal<GlobalPropertiesApi>();
   const dataTheme = ref<boolean>($storage?.layout?.darkMode);
-  const overallStyle = ref<string>($storage?.layout?.overallStyle);
+  const overallStyle = ref<string>($storage?.layout?.overallStyle ?? "system");
   const body = document.documentElement as HTMLElement;
+  /** 浏览器（操作系统）当前的深浅色偏好 */
+  const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+
+  /** 自动模式下，跟随浏览器当前主题决定深浅色 */
+  function resolveSystemTheme() {
+    dataTheme.value = mediaQueryList.matches;
+  }
 
   function toggleClass(flag: boolean, clsName: string, target?: HTMLElement) {
     const targetEl = target || document.body;
@@ -92,6 +99,8 @@ export function useDataThemeChange() {
   /** 浅色、深色整体风格切换 */
   function dataThemeChange(overall?: string) {
     overallStyle.value = overall;
+    // “自动”模式跟随浏览器（操作系统）当前主题
+    if (overall === "system") resolveSystemTheme();
     if (useEpThemeStoreHook().epTheme === "light" && dataTheme.value) {
       setLayoutThemeColor("default", false);
     } else {
@@ -106,6 +115,24 @@ export function useDataThemeChange() {
       }
       document.documentElement.classList.remove("dark");
     }
+  }
+
+  /** 浏览器主题变化时同步页面样式（仅“自动”模式生效） */
+  function updateSystemTheme() {
+    if (overallStyle.value !== "system") return;
+    dataThemeChange("system");
+  }
+
+  /** 开始监听浏览器主题变化 */
+  function watchSystemThemeChange() {
+    updateSystemTheme();
+    mediaQueryList.removeEventListener("change", updateSystemTheme);
+    mediaQueryList.addEventListener("change", updateSystemTheme);
+  }
+
+  /** 停止监听浏览器主题变化 */
+  function removeSystemThemeChange() {
+    mediaQueryList.removeEventListener("change", updateSystemTheme);
   }
 
   /** 清空缓存并返回登录页 */
@@ -132,6 +159,8 @@ export function useDataThemeChange() {
     onReset,
     toggleClass,
     dataThemeChange,
+    watchSystemThemeChange,
+    removeSystemThemeChange,
     setEpThemeColor,
     setLayoutThemeColor
   };

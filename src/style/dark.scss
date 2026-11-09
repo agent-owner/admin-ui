@@ -14,6 +14,9 @@ html.dark {
   /* switch关闭状态下的color 需要时可取用 */
   --pure-switch-off-color: #ffffff3f;
 
+  /* 暗色下页面底色（登录页等无独立背景的页面同样生效） */
+  background-color: var(--el-bg-color-page);
+
   .navbar,
   .tags-view,
   .contextmenu,

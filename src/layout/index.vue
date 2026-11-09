@@ -14,6 +14,7 @@ import {
   computed,
   onMounted,
   onBeforeMount,
+  onUnmounted,
   defineComponent
 } from "vue";
 import {
@@ -37,6 +38,8 @@ const { layout } = useLayout();
 const isMobile = deviceDetection();
 const pureSetting = useSettingStoreHook();
 const { $storage } = useGlobal<GlobalPropertiesApi>();
+const { dataThemeChange, watchSystemThemeChange, removeSystemThemeChange } =
+  useDataThemeChange();
 
 const set: setType = reactive({
   sidebar: computed(() => {
@@ -121,8 +124,12 @@ onMounted(() => {
 });
 
 onBeforeMount(() => {
-  useDataThemeChange().dataThemeChange($storage.layout?.overallStyle);
+  dataThemeChange($storage.layout?.overallStyle);
+  /** 登录后同样跟随浏览器（操作系统）当前主题 */
+  watchSystemThemeChange();
 });
+
+onUnmounted(removeSystemThemeChange);
 
 const LayHeader = defineComponent({
   name: "LayHeader",

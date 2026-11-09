@@ -6,7 +6,6 @@ import {
   reactive,
   computed,
   nextTick,
-  onUnmounted,
   onBeforeMount
 } from "vue";
 import { emitter } from "@/utils/mitt";
@@ -272,34 +271,9 @@ watch($storage, ({ layout }) => {
   }
 });
 
-const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
-
-/** 根据操作系统主题设置平台整体风格 */
-function updateTheme() {
-  if (overallStyle.value !== "system") return;
-  if (mediaQueryList.matches) {
-    dataTheme.value = true;
-  } else {
-    dataTheme.value = false;
-  }
-  dataThemeChange(overallStyle.value);
-}
-
-function removeMatchMedia() {
-  mediaQueryList.removeEventListener("change", updateTheme);
-}
-
-/** 监听操作系统主题改变 */
-function watchSystemThemeChange() {
-  updateTheme();
-  removeMatchMedia();
-  mediaQueryList.addEventListener("change", updateTheme);
-}
-
 onBeforeMount(() => {
   /* 初始化系统配置 */
   nextTick(() => {
-    watchSystemThemeChange();
     settings.greyVal &&
       document.querySelector("html")?.classList.add("html-grey");
     settings.weakVal &&
@@ -308,8 +282,6 @@ onBeforeMount(() => {
     settings.hideFooter && hideFooterChange();
   });
 });
-
-onUnmounted(() => removeMatchMedia);
 </script>
 
 <template>
@@ -328,7 +300,6 @@ onUnmounted(() => removeMatchMedia);
               : (dataTheme = false);
             overallStyle = theme.option.theme;
             dataThemeChange(theme.option.theme);
-            theme.index === 2 && watchSystemThemeChange();
           }
         "
       />

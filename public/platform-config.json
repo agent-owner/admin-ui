@@ -8,7 +8,7 @@
   "Layout": "vertical",
   "Theme": "light",
   "DarkMode": false,
-  "OverallStyle": "light",
+  "OverallStyle": "system",
   "Grey": false,
   "Weak": false,
   "HideTabs": false,
