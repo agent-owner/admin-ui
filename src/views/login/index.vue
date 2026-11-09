@@ -67,6 +67,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
             message("登录失败", { type: "error" });
           }
         })
+        .catch(() => {
+          message("登录失败，请稍后重试", { type: "error" });
+        })
         .finally(() => (loading.value = false));
     }
   });

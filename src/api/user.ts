@@ -34,9 +34,22 @@ export type RefreshTokenResult = {
   };
 };
 
+export type LoginPublicKeyResult = {
+  success: boolean;
+  data: {
+    /** 用于加密登录密码的 RSA 公钥（PEM 或 base64） */
+    publicKey: string;
+  };
+};
+
 /** 登录 */
 export const getLogin = (data?: object) => {
   return http.request<UserResult>("post", "/login", { data });
+};
+
+/** 获取登录密码加密公钥 */
+export const getLoginPublicKey = () => {
+  return http.request<LoginPublicKeyResult>("get", "/login/publicKey");
 };
 
 /** 刷新`token` */

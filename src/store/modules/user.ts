@@ -11,9 +11,11 @@ import {
   type UserResult,
   type RefreshTokenResult,
   getLogin,
+  getLoginPublicKey,
   refreshTokenApi
 } from "@/api/user";
 import { useMultiTagsStoreHook } from "./multiTags";
+import { encryptByPublicKey } from "@/utils/rsa";
 import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
 
 export const useUserStore = defineStore("pure-user", {
@@ -64,9 +66,18 @@ export const useUserStore = defineStore("pure-user", {
       this.loginDay = Number(value);
     },
     /** 登入 */
-    async loginByUsername(data) {
+    async loginByUsername(data: { username: string; password: string }) {
+      const publicKeyResult = await getLoginPublicKey();
+      if (!publicKeyResult?.success || !publicKeyResult.data?.publicKey) {
+        throw new Error("获取登录加密公钥失败");
+      }
+      // 密码只以公钥加密后的密文提交，避免明文出现在请求体中
+      const encryptedPassword = encryptByPublicKey(
+        data.password,
+        publicKeyResult.data.publicKey
+      );
       return new Promise<UserResult>((resolve, reject) => {
-        getLogin(data)
+        getLogin({ username: data.username, password: encryptedPassword })
           .then(data => {
             if (data?.success) setToken(data.data);
             resolve(data);
