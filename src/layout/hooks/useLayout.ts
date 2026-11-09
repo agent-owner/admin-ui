@@ -23,7 +23,7 @@ export function useLayout() {
         sidebarStatus: $config?.SidebarStatus ?? true,
         epThemeColor: $config?.EpThemeColor ?? "#409EFF",
         themeColor: $config?.Theme ?? "light",
-        overallStyle: $config?.OverallStyle ?? "light"
+        overallStyle: $config?.OverallStyle ?? "system"
       };
     }
     /** 灰色模式、色弱模式、隐藏标签页 */
